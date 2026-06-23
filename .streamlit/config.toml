@@ -1,0 +1,13 @@
+# .streamlit/config.toml
+[theme]
+# We set a neutral base so our custom CSS handles the dynamic Light/Dark mode flawlessly.
+base = "light"
+primaryColor = "#6366F1"
+backgroundColor = "transparent"
+secondaryBackgroundColor = "transparent"
+textColor = "#1E293B"
+font = "sans serif"
+
+[server]
+# Enhances UI responsiveness
+enableStaticServing = true
