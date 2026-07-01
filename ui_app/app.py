@@ -17,17 +17,20 @@ st.set_page_config(
 )
 
 def inject_aurora_glassmorphism():
-    st.markdown("""
+    imports = """
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    """
     
-    /* Clean UI: Hide Streamlit clutter */
+    css_rules = """
+    /* Clean UI: Hide all Streamlit clutter */
     [data-testid="stToolbar"], header, footer, #MainMenu, .stDeployButton {display: none !important; visibility: hidden !important;}
+    a.header-anchor {display: none !important;}
     
     html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
     
-    /* Global Background */
+    /* Background Fix for Cloud */
     .stApp, [data-testid="stAppViewContainer"] { 
         background-color: #030712 !important; 
         background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%) !important; 
@@ -37,11 +40,10 @@ def inject_aurora_glassmorphism():
     
     h1, h2, h3, h4, p, span, label, li { font-family: 'Plus Jakarta Sans', sans-serif !important; color: #F8FAFC !important; }
     
-    /* Glassmorphism Cards */
+    /* Glassmorphism Cards & Inputs */
     div[data-testid="stFileUploader"], div[data-testid="stTextArea"], .glass-card { 
         background: rgba(17, 24, 39, 0.55) !important; 
         backdrop-filter: blur(24px) !important; 
-        -webkit-backdrop-filter: blur(24px) !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important; 
         border-radius: 16px !important; 
         padding: 1.5rem !important; 
@@ -49,28 +51,18 @@ def inject_aurora_glassmorphism():
         margin-bottom: 1rem;
     }
     
-    /* Safe File Uploader Fix (Cloud-Proof) */
-    [data-testid="stFileUploadDropzone"] {
-        background-color: rgba(0,0,0,0.2) !important;
-        border: 1px dashed rgba(255,255,255,0.3) !important;
-        border-radius: 8px !important;
-    }
-    [data-testid="stFileUploadDropzone"] * { color: #E2E8F0 !important; }
+    /* 100% ORIGINAL UPLOADER FIX (Exactly like your localhost) */
+    [data-testid="stFileUploadDropzone"] div { color: #94A3B8 !important; }
+    [data-testid="stFileUploadDropzone"] small { color: #64748B !important; }
+    [data-testid="stFileUploadDropzone"] button { color: #F8FAFC !important; border: 1px solid rgba(255,255,255,0.2) !important; background: rgba(255,255,255,0.05) !important; }
     
-    /* Safe Text Area Fix */
-    .stTextArea textarea { 
-        background-color: rgba(0,0,0,0.2) !important; 
-        border: 1px solid rgba(255,255,255,0.1) !important; 
-        color: #F8FAFC !important; 
-        border-radius: 8px !important;
-    }
-    .stTextArea textarea::placeholder { color: #64748B !important; }
+    /* Fix for text area input */
+    .stTextArea > div > div > textarea { background-color: transparent !important; border: none !important; color: #F8FAFC !important; }
+    .stTextArea > div > div > textarea::placeholder { color: #64748B !important; opacity: 1 !important; }
     
-    /* Button Fix: Force full width always */
-    div.stButton { width: 100% !important; }
-    div.stButton > button { 
-        width: 100% !important; 
-        display: block !important;
+    /* 100% ORIGINAL BUTTONS FIX (Exactly like your localhost) */
+    div[data-testid="stButton"] > button { 
+        width: 100%; 
         background: linear-gradient(135deg, #4F46E5, #9333EA) !important; 
         color: #FFFFFF !important; 
         border: none !important; 
@@ -80,12 +72,13 @@ def inject_aurora_glassmorphism():
         box-shadow: 0 4px 15px rgba(147, 51, 234, 0.25) !important; 
         transition: all 0.3s ease !important;
     }
-    div.stButton > button:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4) !important; }
+    div[data-testid="stButton"] > button:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4) !important; }
     
     div[data-testid="stDownloadButton"] > button { background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #F8FAFC !important; }
     .fa-fw { margin-right: 8px; color: #A855F7; }
     </style>
-    """, unsafe_allow_html=True)
+    """
+    st.markdown(imports + css_rules.replace('\n', ''), unsafe_allow_html=True)
 
 def render_gauge_chart(score: int):
     if score <= 30: bar_color = "#EF4444"
@@ -120,7 +113,7 @@ def main():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("Initialize Semantic Analysis", use_container_width=True):
+    if st.button("Initialize Semantic Analysis"):
         if uploaded_file and job_input:
             if "http://" in job_input.lower() or "https://" in job_input.lower() or "www." in job_input.lower():
                 st.error("🚫 **URL Detected:** To ensure 100% accuracy and avoid website security blocks, please copy and paste the **RAW TEXT** of the job description instead of a link.")
